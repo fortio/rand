@@ -61,12 +61,12 @@ func (r Rand) Uint64() uint64 {
 }
 
 // Random3 generates a random vector of 3 components in [0,1).
-func Random3(r Rand) (float64, float64, float64) {
+func (r Rand) Random3() (float64, float64, float64) {
 	return r.rng.Float64(), r.rng.Float64(), r.rng.Float64()
 }
 
 // RandomInRange generates a random value in the range [start,end).
-func RandomInRange(r Rand, start, end float64) float64 {
+func (r Rand) RandomInRange(start, end float64) float64 {
 	l := end - start
 	return start + l*r.rng.Float64()
 }
@@ -76,7 +76,7 @@ func RandomInRange(r Rand, start, end float64) float64 {
 // and produces uniformly distributed points on the unit sphere.
 // Being both correct and most efficient this now the only method for generating
 // random unit vectors provided (compared to the original tray 3 methods).
-func RandomUnitVector(r Rand) (float64, float64, float64) {
+func (r Rand) RandomUnitVector() (float64, float64, float64) {
 	for {
 		x, y, z := r.rng.NormFloat64(), r.rng.NormFloat64(), r.rng.NormFloat64()
 		radius := math.Sqrt(x*x + y*y + z*z)
