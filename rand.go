@@ -74,7 +74,7 @@ func (r Rand) RandomInRange(start, end float64) float64 {
 // RandomUnitVector generates a random unit vector using normal distribution.
 // It is the fastest of the three methods tested (versus rejection or angle methods)
 // and produces uniformly distributed points on the unit sphere.
-// Being both correct and most efficient this now the only method for generating
+// Being both correct and most efficient, this is now the only method for generating
 // random unit vectors provided (compared to the original tray 3 methods).
 func (r Rand) RandomUnitVector() (float64, float64, float64) {
 	for {
