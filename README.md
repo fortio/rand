@@ -11,6 +11,8 @@ It's a wrapper over stdlib math/rand/v2 PCG - ie the fastest available in stdlib
 
 It provides convenience method to either have different rng each time (seed 0) or a specific repeatable sequence.
 
+Like the underlying math/rand/v2, it is **not** meant for anything related to cryptography or security.
+
 ## Use
 
 ```
