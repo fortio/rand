@@ -81,7 +81,7 @@ func TestRandom(t *testing.T) {
 	}
 }
 
-// TestRandomUnitVectorCorrectness verifies that all three RandomUnitVector variants
+// TestRandomUnitVectorCorrectness verifies that RandomUnitVector
 // produce vectors of unit length.
 func TestRandomUnitVectorCorrectness(t *testing.T) {
 	r := RandForTests()
