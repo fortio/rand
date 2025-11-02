@@ -3,6 +3,8 @@
 // for maximum performance.
 // It provides convenience methods to either have different rng each time (seed 0)
 // or a specific repeatable sequence.
+// It also provides methods useful for vector graphics, ray tracing and
+// simulations (e.g. random unit 3d vectors).
 package rand
 
 import (
