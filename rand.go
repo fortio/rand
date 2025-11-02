@@ -1,7 +1,7 @@
 // Package rand is a wrapper over stdlib math/rand/v2 PCG,
 // the fastest available in stdlib meant to have 1 instance per goroutine
 // for maximum performance.
-// It provides convenience method to either have different rng each time (seed 0)
+// It provides convenience methods to either have different rng each time (seed 0)
 // or a specific repeatable sequence.
 package rand
 
@@ -11,13 +11,14 @@ import (
 )
 
 // Rand wraps a random number generator, is meant to be embedded in other structs and
-// reused during rendering but not shared across goroutines. It's ok to copy by value
-// as the underlying rng state is a pointer.
+// reused but not shared across goroutines. It's ok to copy by value as the underlying
+// rng state is a pointer.
 type Rand struct {
 	rng *rand.Rand
 }
 
-// NewRand generates a new (scene) Rand with the given seed. If seed is 0, a random seed is used.
+// NewRand generates a new Rand with the given seed. If seed is 0, a random seed is used.
+// It's meant for the single goroutine or pre-multiple goroutine (main thread) case.
 func NewRand(seed uint64) Rand {
 	return NewRandIdx(0, seed)
 }
