@@ -1,4 +1,4 @@
 FROM scratch
-COPY NAME /usr/bin/NAME
+COPY rand /usr/bin/rand
 ENV HOME=/home/user
-ENTRYPOINT ["/usr/bin/NAME"]
+ENTRYPOINT ["/usr/bin/rand"]

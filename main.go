@@ -1,5 +1,5 @@
-// NAME
-// DESCRIPTION
+// rand
+// Random number wrapper whose goal is to be used one instance per goroutine
 
 package main
 
@@ -55,7 +55,7 @@ func Main() int {
 		ap.ClearScreen()
 		ap.StartSyncMode()
 		// Redraw/resize/do something here:
-		ap.WriteBoxed(ap.H/2-1, "Welcome to NAME!\n%dx%d\nQ to quit.", ap.W, ap.H)
+		ap.WriteBoxed(ap.H/2-1, "Welcome to rand!\n%dx%d\nQ to quit.", ap.W, ap.H)
 		// ...
 		ap.EndSyncMode()
 		return nil
