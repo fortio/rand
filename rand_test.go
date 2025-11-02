@@ -269,6 +269,100 @@ func TestSampleDiscMethods(t *testing.T) {
 	}
 }
 
+func TestNormFloat64(t *testing.T) {
+	r := RandForTests()
+	const samples = 1000
+	var sum, sumSquares float64
+
+	for range samples {
+		v := r.NormFloat64()
+		sum += v
+		sumSquares += v * v
+	}
+
+	// Normal distribution should have mean ≈ 0 and stddev ≈ 1
+	mean := sum / samples
+	variance := sumSquares/samples - mean*mean
+	stddev := math.Sqrt(variance)
+
+	// With 1000 samples, allow reasonable tolerance
+	const meanTolerance = 0.1
+	const stddevTolerance = 0.2
+
+	if math.Abs(mean) > meanTolerance {
+		t.Errorf("NormFloat64() mean = %.6f, want ≈0 (within %.6f)", mean, meanTolerance)
+	}
+	if math.Abs(stddev-1.0) > stddevTolerance {
+		t.Errorf("NormFloat64() stddev = %.6f, want ≈1 (within %.6f)", stddev, stddevTolerance)
+	}
+}
+
+func TestIntN(t *testing.T) {
+	r := RandForTests()
+	const samples = 1000
+
+	// Test with n=10
+	n := 10
+	counts := make([]int, n)
+	for range samples {
+		v := r.IntN(n)
+		if v < 0 || v >= n {
+			t.Errorf("IntN(%d) = %v, want in [0,%d)", n, v, n)
+		}
+		counts[v]++
+	}
+
+	// Check that all values were hit at least once
+	for i, count := range counts {
+		if count == 0 {
+			t.Errorf("IntN(%d) never produced value %d in %d samples", n, i, samples)
+		}
+	}
+}
+
+func TestUint64(t *testing.T) {
+	r := RandForTests()
+	const samples = 100
+	results := make(map[uint64]struct{})
+
+	for range samples {
+		v := r.Uint64()
+		results[v] = struct{}{}
+	}
+
+	// With 100 samples of uint64, we should get all unique values
+	// (collision probability is negligible)
+	if len(results) != samples {
+		t.Errorf("Uint64() produced %d unique values, want %d", len(results), samples)
+	}
+}
+
+func TestRandomInRange(t *testing.T) {
+	r := RandForTests()
+	const samples = 1000
+
+	tests := []struct {
+		start, end float64
+	}{
+		{0, 1},
+		{-1, 1},
+		{10, 20},
+		{-5.5, -2.3},
+	}
+
+	for _, tt := range tests {
+		t.Run(fmt.Sprintf("range_%.1f_to_%.1f", tt.start, tt.end), func(t *testing.T) {
+			for range samples {
+				v := r.RandomInRange(tt.start, tt.end)
+				if v < tt.start || v >= tt.end {
+					t.Errorf("RandomInRange(%v, %v) = %v, want in [%v,%v)",
+						tt.start, tt.end, v, tt.start, tt.end)
+				}
+			}
+		})
+	}
+}
+
 func BenchmarkRandomUnitVectorNorm(b *testing.B) {
 	r := RandForTests()
 	for range b.N {
