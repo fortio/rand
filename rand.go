@@ -65,18 +65,17 @@ func Random3(r Rand) (float64, float64, float64) {
 	return r.rng.Float64(), r.rng.Float64(), r.rng.Float64()
 }
 
-// RandomInRange generates a random vector with each component in the Interval
-// excluding the end.
+// RandomInRange generates a random value in the range [start,end).
 func RandomInRange(r Rand, start, end float64) float64 {
 	l := end - start
 	return start + l*r.rng.Float64()
 }
 
 // RandomUnitVector generates a random unit vector using normal distribution.
-// It is the fastest of the three methods provided here and produces uniformly
-// distributed points on the unit sphere. Being both correct and most efficient,
-// this is the preferred method for generating random unit vectors and thus gets
-// the default name.
+// It is the fastest of the three methods tested (versus rejection or angle methods)
+// and produces uniformly distributed points on the unit sphere.
+// Being both correct and most efficient this now the only method for generating
+// random unit vectors provided (compared to the original tray 3 methods).
 func RandomUnitVector(r Rand) (float64, float64, float64) {
 	for {
 		x, y, z := r.rng.NormFloat64(), r.rng.NormFloat64(), r.rng.NormFloat64()
@@ -87,8 +86,8 @@ func RandomUnitVector(r Rand) (float64, float64, float64) {
 	}
 }
 
-// SampleDisc returns a random point (x,y) within a disc of radius r
-// using the provided random source (and currently implemented via rejection sampling).
+// SampleDisc returns a random point (x,y) within a disc of the given radius
+// from random source (and currently implemented via rejection sampling).
 func (r Rand) SampleDisc(radius float64) (x, y float64) {
 	for {
 		x = 2*r.rng.Float64() - 1.0
@@ -100,7 +99,7 @@ func (r Rand) SampleDisc(radius float64) (x, y float64) {
 	return radius * x, radius * y
 }
 
-// SampleDiscAngle returns a random point (x,y) within a disc of radius r.
+// SampleDiscAngle returns a random point (x,y) within a disc of given radius.
 // Angle method.
 func (r Rand) SampleDiscAngle(radius float64) (x, y float64) {
 	theta := 2.0 * math.Pi * r.rng.Float64()
