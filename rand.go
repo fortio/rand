@@ -19,18 +19,18 @@ type Rand struct {
 	rng *rand.Rand
 }
 
-// NewRand generates a new Rand with the given seed. If seed is 0, a random seed is used.
+// New generates a new Rand with the given seed. If seed is 0, a random seed is used.
 // It's meant for the single goroutine or pre-multiple goroutine (main thread) case.
-func NewRand(seed uint64) Rand {
-	return NewRandIdx(0, seed)
+func New(seed uint64) Rand {
+	return NewIdx(0, seed)
 }
 
-// NewRandIdx creates a new Rand using the given index and seed.
+// NewIdx creates a new Rand using the given index and seed.
 // idx can be used to create different Rand instances for different goroutines.
 // If seed is 0, a random seed is used and index is ignored.
 //
 //nolint:gosec // not crypto use.
-func NewRandIdx(idx int, seed uint64) Rand {
+func NewIdx(idx int, seed uint64) Rand {
 	seed1 := uint64(idx)
 	seed2 := seed
 	if seed == 0 {
@@ -63,23 +63,23 @@ func (r Rand) Uint64() uint64 {
 	return r.rng.Uint64()
 }
 
-// Random3 generates a random vector of 3 components in [0,1).
-func (r Rand) Random3() (float64, float64, float64) {
+// Vec3 generates a random vector of 3 components in [0,1).
+func (r Rand) Vec3() (float64, float64, float64) {
 	return r.rng.Float64(), r.rng.Float64(), r.rng.Float64()
 }
 
-// RandomInRange generates a random value in the range [start,end).
-func (r Rand) RandomInRange(start, end float64) float64 {
+// Float64Range generates a random value in the range [start,end).
+func (r Rand) Float64Range(start, end float64) float64 {
 	l := end - start
 	return start + l*r.rng.Float64()
 }
 
-// RandomUnitVector generates a random unit vector using normal distribution.
+// UnitVector generates a random unit vector using normal distribution.
 // It is the fastest of the three methods tested (versus rejection or angle methods)
 // and produces uniformly distributed points on the unit sphere.
 // Being both correct and most efficient, this is now the only method for generating
 // random unit vectors provided (compared to the original tray 3 methods).
-func (r Rand) RandomUnitVector() (float64, float64, float64) {
+func (r Rand) UnitVector() (float64, float64, float64) {
 	for {
 		x, y, z := r.rng.NormFloat64(), r.rng.NormFloat64(), r.rng.NormFloat64()
 		radius := math.Sqrt(x*x + y*y + z*z)
@@ -89,9 +89,9 @@ func (r Rand) RandomUnitVector() (float64, float64, float64) {
 	}
 }
 
-// SampleDisc returns a random point (x,y) within a disc of the given radius
+// InDisc returns a random point (x,y) within a disc of the given radius
 // from random source (and currently implemented via rejection sampling).
-func (r Rand) SampleDisc(radius float64) (x, y float64) {
+func (r Rand) InDisc(radius float64) (x, y float64) {
 	for {
 		x = 2*r.rng.Float64() - 1.0
 		y = 2*r.rng.Float64() - 1.0
@@ -102,9 +102,9 @@ func (r Rand) SampleDisc(radius float64) (x, y float64) {
 	return radius * x, radius * y
 }
 
-// SampleDiscAngle returns a random point (x,y) within a disc of given radius.
+// InDiscAngle returns a random point (x,y) within a disc of given radius.
 // Angle method.
-func (r Rand) SampleDiscAngle(radius float64) (x, y float64) {
+func (r Rand) InDiscAngle(radius float64) (x, y float64) {
 	theta := 2.0 * math.Pi * r.rng.Float64()
 	rad := radius * math.Sqrt(r.rng.Float64())
 	x = rad * math.Cos(theta)

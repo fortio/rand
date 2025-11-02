@@ -8,7 +8,7 @@ import (
 	"fortio.org/rand"
 )
 
-func ExampleRand_Random3() {
+func ExampleRand_Vec3() {
 	// Example of how it can be used with a vector type (like in fortio.org/ray).
 	type Vec3 struct {
 		x, y, z float64
@@ -18,10 +18,10 @@ func ExampleRand_Random3() {
 		return Vec3{x, y, z}
 	}
 	RandomVec3 := func(r rand.Rand) Vec3 {
-		return NewVec3(r.Random3())
+		return NewVec3(r.Vec3())
 	}
 
-	r := rand.NewRand(42)
+	r := rand.New(42)
 	v := RandomVec3(r)
 
 	fmt.Printf("%#v", v)
@@ -54,7 +54,7 @@ func Length(v vec3) float64 {
 }
 
 func RandForTests() rand.Rand {
-	return rand.NewRand(0)
+	return rand.New(0)
 }
 
 // TestRandom just... exercises the Random function
@@ -65,7 +65,7 @@ func TestRandom(t *testing.T) {
 	expected := interval{Start: 0.0, End: 1.0}
 	r := RandForTests()
 	for range samples {
-		v := newVec3(r.Random3())
+		v := newVec3(r.Vec3())
 		// Check each component is in [0,1)
 		c := v.Components()
 		for i := range 3 {
@@ -89,7 +89,7 @@ func TestRandomUnitVectorCorrectness(t *testing.T) {
 	const tolerance = 1e-9
 
 	for i := range samples {
-		v := newVec3(r.RandomUnitVector())
+		v := newVec3(r.UnitVector())
 		length := Length(v)
 
 		if math.Abs(length-1.0) > tolerance {
@@ -117,7 +117,7 @@ func TestRandomUnitVectorDistribution(t *testing.T) {
 	octantCounts := make([]int, 8)
 
 	for range samples {
-		v := newVec3(r.RandomUnitVector())
+		v := newVec3(r.UnitVector())
 		components := v.Components()
 		x, y, z := components[0], components[1], components[2]
 
@@ -216,7 +216,7 @@ func TestSampleDisc(t *testing.T) {
 	const samples = 1000
 
 	for range samples {
-		x, y := r.SampleDisc(radius)
+		x, y := r.InDisc(radius)
 
 		// Check that point is within disc
 		dist := math.Sqrt(x*x + y*y)
@@ -233,7 +233,7 @@ func TestSampleDiscAngle(t *testing.T) {
 	const samples = 1000
 
 	for range samples {
-		x, y := r.SampleDiscAngle(radius)
+		x, y := r.InDiscAngle(radius)
 
 		// Check that point is within disc
 		dist := math.Sqrt(x*x + y*y)
@@ -251,8 +251,8 @@ func TestSampleDiscMethods(t *testing.T) {
 	const samples = 100
 
 	for range samples {
-		x1, y1 := r.SampleDisc(radius)
-		x2, y2 := r.SampleDiscAngle(radius)
+		x1, y1 := r.InDisc(radius)
+		x2, y2 := r.InDiscAngle(radius)
 
 		// Both should be within disc
 		dist1 := math.Sqrt(x1*x1 + y1*y1)
@@ -353,7 +353,7 @@ func TestRandomInRange(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("range_%.1f_to_%.1f", tt.start, tt.end), func(t *testing.T) {
 			for range samples {
-				v := r.RandomInRange(tt.start, tt.end)
+				v := r.Float64Range(tt.start, tt.end)
 				if v < tt.start || v >= tt.end {
 					t.Errorf("RandomInRange(%v, %v) = %v, want in [%v,%v)",
 						tt.start, tt.end, v, tt.start, tt.end)
@@ -366,6 +366,6 @@ func TestRandomInRange(t *testing.T) {
 func BenchmarkRandomUnitVectorNorm(b *testing.B) {
 	r := RandForTests()
 	for range b.N {
-		_, _, _ = r.RandomUnitVector()
+		_, _, _ = r.UnitVector()
 	}
 }
