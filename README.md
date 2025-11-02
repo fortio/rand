@@ -17,6 +17,8 @@ It provides convenience method to either have different rng each time (seed 0) o
 go get fortio.org/rand@latest
 ```
 
+And see the [Go doc](https://pkg.go.dev/fortio.org/rand).
+
 ## Benchmarks
 
 ```
