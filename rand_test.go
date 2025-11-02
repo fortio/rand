@@ -52,6 +52,7 @@ func (v vec3) Components() [3]float64 {
 func Length(v vec3) float64 {
 	return math.Sqrt(v.x*v.x + v.y*v.y + v.z*v.z)
 }
+
 func RandForTests() rand.Rand {
 	return rand.NewRand(0)
 }
@@ -268,7 +269,6 @@ func TestSampleDiscMethods(t *testing.T) {
 	}
 }
 
-// Benchmarks for comparing the three methods
 func BenchmarkRandomUnitVectorNorm(b *testing.B) {
 	r := RandForTests()
 	for range b.N {
